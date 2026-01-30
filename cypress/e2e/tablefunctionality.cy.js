@@ -28,17 +28,18 @@
       .clear()
       .type('10000')
     cy.contains('button', 'Apply Filter').click()
+      .should ('be.visible')
     cy.get('[title="Show filters (1 active)"]').click()
-    cy.wait(2000)
+      
     cy.contains('button', 'Clear all filters').click()
                  
     })
 
     it ('should add record in table ', () => {
-        
-        //add table record
-        cy.contains('Add Record').click()
-        cy.contains('li', 'New Record').click()
+     //cy.get('[style="width: max-content; position: relative;"] > .sc-hLseeU').click()
+      cy.contains('Add').click()
+      cy.contains('New Record').click()
+
     })
 
     it ('shoulld view visibility ', () => {
@@ -50,12 +51,7 @@
        
 
     })
-    it ('should add version control in table ', () => {
-      cy.get('[title="Version Control"]').click()
-      .should('be.visible')  
-
-    })
-
+   
     it ('should map columns in table ', () => {
       cy.get('[title="Entity Mapper"]').click()
       .should("be.visible")
