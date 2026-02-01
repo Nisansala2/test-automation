@@ -5,66 +5,101 @@ describe('Login page tests', () => {
     email: 'nisansala@example.com',
     password: '123456'
   }
+
+  const flowName = 'cypress test flow'
+  const flowDesc = 'This is a test automation flow description'
  
-  beforeEach(() => {
-   
-    cy.login1(validUser.email, validUser.password)
+beforeEach(() => {
+  cy.login(validUser.email, validUser.password)
 
   })
   
-  describe("page load and navigate ", () => {
-    it('should load the migration flows page', () => {
-      cy.contains('Manage Flows').click()
+it('load the migration flows page', () => {
+  cy.contains('Manage Flows').click()
           
-    })
+  })
 
-  it('should create new flows correct ', () => {
-      cy.get('button').contains('Manage Flows').click()
-      cy.get('button').contains('New').click()
-      cy.get('#new-flow-name').type('TEST AUTOMATION FLOW12')
-      cy.get('#new-flow-description').type('This is a test automation flow description')
-      cy.get('button').contains('Create Flow').click()
+it('create new flows ', () => {
+  cy.get('button').contains('Manage Flows').click()
+  cy.get('button').contains('New').click()
+  cy.get('#new-flow-name').type(flowName)
+  cy.get('#new-flow-description').type(flowDesc)
+  cy.get('button').contains('Create Flow').click()
+  cy.contains(flowName).should('be.visible')
+ })
 
-    })
 
-   it('create and search flows ', () => {
+it('search exsiting flows ', () => {
+  cy.get('button').contains('Manage Flows').click()
+  cy.get('input[placeholder="Search flows..."]')
+    .clear()
+    .type(flowName)
+    .should('have.value', flowName)
+   
+  cy.contains(flowName).click()
+})
 
-   cy.get('[style="background: rgb(255, 255, 255); color: rgb(0, 120, 212); font-weight: 600; border: none; padding: 10px 18px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer;"]').click()
-   cy.get('input[placeholder="Search flows..."]')
-   .clear()
-   .type(flowName)
-   .should('have.value', flowName)
-   //Give UI time to filter results
-    cy.wait(500)
-
-   cy.get('body').then(($body) => {
-    // 🔎 IF flow exists in search results
-  if ($body.text().includes(flowName)) {
-    cy.contains(flowName).first().click()
-  } 
-  else {
-    // ➕ ELSE create new flow
-
-    // Open create flow modal
-    cy.get(':nth-child(1) > .sc-dmqHEX > .sc-gjTGSA').click()
-
-    // Wait for modal
-    cy.contains('h3', 'New flow').should('be.visible')
-
-    // Enter flow name & description
-    cy.get('#new-flow-name').clear().type(flowName)
-    cy.get('#new-flow-description').clear().type(flowDesc)
-
-    // Create flow button
-    cy.contains('button', 'Create Flow')
-      .should('be.visible')
-      .and('not.be.disabled')
-      .click()
-  }
+it('open flow using flow name ', () => {
+  cy.get('button').contains('Manage Flows').click()
+  cy.contains(flowName).click()
   
-   })
+  })
 
-  })  
+it ('Flow visibility button ', () => {
+  cy.get('button').contains('Manage Flows').click()
+  cy.contains('td', flowName)
+    .parents('tr')
+    .within(() => {
+  cy.get('[title="Open flow designer"]').click()
+    })
+})
+  
+  
+it ('edit flow ', () => {
+  cy.get('button').contains('Manage Flows').click()
+  cy.contains('td', flowName)
+    .parents('tr')
+    .within(() => {
+  cy.get('[title="Edit flow details"]').click()
+    })
+  cy.get('#edit-flow-name').clear().type('cypress edit test flow')
+  cy.get('#edit-flow-description').clear().type(' edit This is a test automation flow description')
+  cy.get('button').contains('Save').click()
+ 
+})
+ 
+it ('Export flow ', () => {
+  cy.get('button').contains('Manage Flows').click()
+  cy.contains('td', 'cypress edit test flow')
+    .parents('tr')
+    .within(() => {
+  cy.get('[title="Export flow"]').click()
+    })
+  cy.wait(2000)
+  
+})
+
+it ('delete flow ', () => {
+  cy.get('button').contains('Manage Flows').click()
+  cy.contains('td', 'cypress edit test flow')
+    .parents('tr')
+    .within(() => {
+  cy.get('[title="Delete flow "]').click()
+    })
+  cy.get('button').contains('Delete Flow').click()
+  cy.get('button').contains('Confirm').click()
+  cy.contains('cypress updated test flow').should('not.exist')
+  })
+
+it ('Import flow ', () => {
+  cy.get('button').contains('Manage Flows').click()
+  cy.get('button').contains('Import').click()
+  const filePath = 'cypressImport_flow.json';
+  cy.get('input[type="file"]').attachFile(filePath);
+  cy.contains('Import').click()
+
+}) 
+}) 
 
 
    
@@ -73,10 +108,9 @@ describe('Login page tests', () => {
    
    
 
-  
-  })
 
 
-})
+
+
 
    

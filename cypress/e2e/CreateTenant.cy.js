@@ -4,25 +4,33 @@ describe('Login page tests', () => {
     email: 'nisansala@example.com',
     password: '123456'
   }
+
+  const validtenant ={
+    name: 'cypress test automation',
+    schema: 'cypresstenant',
+    key: 'cypresstenant'
+  }
  
   beforeEach(() => {
-    cy.visit('https://tabletap.lk/admin/pages')
 
-    cy.login(validUser.email, validUser.password)
+  cy.visit('https://tabletap.lk/login')
+  cy.get('input[type="email"]').type(validUser.email)
+  cy.get('input[type="password"]').type(validUser.password)
+  cy.contains('button', 'Sign in').click()
 
   })
-    describe("page load and navigate ", () => {
-    it('should load the migration flows page', () => {
-      
-      cy.get('[style="background: rgb(250, 249, 248); min-height: 100vh; padding: 24px;"]').should('be.visible')
-      cy.get('.bpJfoD').click()
-      cy.get('.fhxSOB > .sc-jOQpHc > ul > :nth-child(3) > .sc-eZYOHW > .sc-iCmkLe').click()
-      cy.get('[data-id="42"] > .cRYeRf > [data-testid="property-list-name"]').click()
-      cy.get('[data-testid="action-viewAccount"]').click()
+  
+it('create tenant ', () => {
+  cy.get('.bpJfoD').click()    
+  cy.contains('Companies').click()
+  cy.contains('Create new').click()
+  cy.get('input[name="name"]').type(validtenant.name)
+  cy.get('input[name="schema"]').type(validtenant.schema)
+  cy.get('input[name="key"]').type(validtenant.key)
+  cy.get('button').contains('Create').click()
+  cy.contains('cypress test automation').click()
+  cy.contains('View Account').click()
      
+  })
 
-    })
-
-
-    })
-})
+})    

@@ -2,21 +2,21 @@
 import 'cypress-file-upload';
 
 Cypress.Commands.add('login', (email,password) => {
-  cy.visit('https://cypress.tabletap.lk/login')
+  cy.visit('https://cypresstenant.tabletap.lk/pages/')
   cy.get('input[type="email"]').type(email)
   cy.get('input[type="password"]').type(password)
   cy.contains('button', 'Sign in').click()
  
 })
 
+
+
 Cypress.Commands.add('migration_flow', () => {
 cy.contains('Manage Flows').click()
 cy.contains('cypress test').click()
 
-
-
-   
 })
+
 Cypress.Commands.add('globalfilter', () => {
   cy.contains('Manage Flows').click()
   cy.contains('cypress globalfilter').click()

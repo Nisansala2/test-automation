@@ -1,0 +1,21 @@
+{
+  "flow": {
+    "id": 409,
+    "name": "cypressImport",
+    "description": "testing import",
+    "diagram": {
+      "nodes": [],
+      "edges": [],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "meta": {
+        "globalFilters": [],
+        "entityMappings": {}
+      }
+    },
+    "updatedAt": "2026-01-31T20:55:44.419Z"
+  }
+}

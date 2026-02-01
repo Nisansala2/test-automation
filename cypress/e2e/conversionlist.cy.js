@@ -7,34 +7,30 @@ describe('Conversion List functionality', () => {
 
   beforeEach(() => {
     cy.login(validUser.email, validUser.password)
-    cy.navigateToConversionList()
+    cy.get('.bpJfoD').click()    
+    cy.contains('Conversion List').click()
   })
   
-  it(' should create conversion list', () => {
-        cy.contains('New Conversion List').click()
+  it('Create conversion list', () => {
+  cy.contains('New Conversion List').click()
+  cy.get('input[placeholder="e.g. CurrencyConversions"]')
+    .clear()
+    .type('cypress_conversion_list1')
+  cy.contains('button', 'Create').click() 
 
-    cy.get('input[placeholder="e.g. CurrencyConversions"]')
-      .clear()
-      .type('cypress_conversion_list2')
-
-    cy.contains('button', 'Create').click()
-
-           
   })
 
-   it('should add value to conversion list', () => {
-    cy.contains('cypress_conversion_list1').click()
-    cy.contains('Add Value').click()
-    cy.get('input[placeholder="Old value"]')
+  it('Add value to conversion list', () => {
+  cy.contains('cypress_conversion_list1').click()
+  cy.contains('Add Value').click()
+  cy.get('input[placeholder="Old value"]')
     .clear()
     .type('ABC')
-
-   cy.get('input[placeholder="New value"]')
+  cy.get('input[placeholder="New value"]')
     .clear()
     .type('XYZ')
 
-    cy.get('#app button[title="Save"]').click();
-    
+  cy.get('#app button[title="Save"]').click();
   
   })
 

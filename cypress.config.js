@@ -3,6 +3,7 @@ const { defineConfig } = require("cypress");
 module.exports = defineConfig({
   projectId: 'eraj8g',
   e2e: {
+    experimentalStudio: false, // enable studio
     watchForFileChanges: false,
     experimentalMemoryManagement: true,
     numTestsKeptInMemory: 1,

@@ -7,7 +7,8 @@ describe('Version control functionality', () => {
 
    beforeEach(() => {
     cy.login(validUser.email, validUser.password)
-    cy.visit('https://cypress.tabletap.lk/resources/cypress.Supplier')
+    cy.get('.bpJfoD').click()    
+    cy.contains('Version control').click()
   })
 
     it ('should view version control functionality', () => {

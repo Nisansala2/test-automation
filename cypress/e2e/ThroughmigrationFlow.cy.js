@@ -11,13 +11,13 @@ beforeEach(() => {
    })
 
 it('Reload tables in migrate data ', () => {  
- cy.migration_flow()
- cy.contains('Loading database...', { timeout: 60000 })
+  cy.migration_flow()
+  cy.contains('Loading database...', { timeout: 60000 })
     .should('not.exist')
- cy.get('[title="Reload tables from source"]').click()
- cy.wait(1000) 
-  })
+  cy.get('[title="Reload tables from source"]').click()
+  cy.wait(1000) 
 
+  })
 
 it('should search table  ', () => {
   const tableSearch1 = '^SupplierAddress$'
@@ -25,46 +25,42 @@ it('should search table  ', () => {
   const placeholder = 'Search: ^start, end$, ^exact$, includes'
   cy.migration_flow()
   cy.get('input[placeholder="' + placeholder + '"]')
-  .type(tableSearch1 )
-
+    .type(tableSearch1 )
   cy.contains('Supplier').click()
   cy.wait(2000)
              
   })
 
    
-it ('should synchronize ,Download and migrate database ', () => {
+it('should synchronize ,Download and migrate database ', () => {
+  
   cy.migration_flow()
   
   cy.get('[title="Synchronize database"]').click()
   cy.contains('Synchronizing database...', { timeout: 20000 })
-  // Wait until sync message disappears
+  
   cy.contains('Synchronizing database...', { timeout: 60000 })
     .should('not.exist')
 
   cy.contains('SupplierAddress')
-  .parents('.react-flow__node')
-  .within(() => {
-    // Wait until migrate button becomes enabled
-   cy.get('[title="Download data from source database"]' ,{timeout:6000 }).click()
-     .should('be.visible')
-  .and('not.be.disabled')
-  .click()
-
-
-  //
-    //.should('be.enabled')
+    .parents('.react-flow__node')
+    .within(() => {
+    
+  cy.get('[title="Download data from source database"]' ,{timeout:6000 }).click()
+    .should('be.visible')
+    .and('not.be.disabled')
+    .click()
  
   cy.get('[title="Start migration Upload data to destination database"]').click()
     .should('be.enabled')
-  
-  })
+    })
   cy.get('[title="Save current configuration"] > .sc-kFuwaP').click()
 
 })
 
 
 it(' sholud show logs in table ', () => {
+  
   cy.migration_flow()       
   cy.get('[title="View download and migration logs for this table"]').click()
   cy.wait(5000)
