@@ -7,6 +7,7 @@ describe('Conversion List functionality', () => {
 
   beforeEach(() => {
     cy.login(validUser.email, validUser.password)
+    //toggle view menu
     cy.get('.bpJfoD').click()    
     cy.contains('Conversion List').click()
   })

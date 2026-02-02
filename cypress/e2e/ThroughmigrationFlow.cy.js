@@ -53,7 +53,13 @@ it('should synchronize ,Download and migrate database ', () => {
  
   cy.get('[title="Start migration Upload data to destination database"]').click()
     .should('be.enabled')
+
+  cy.get('[title="View download and migration logs for this table"]').click()
+  cy.wait(5000)
+  cy.contains('close').click()
     })
+  
+ 
   cy.get('[title="Save current configuration"] > .sc-kFuwaP').click()
 
 })
