@@ -7,12 +7,14 @@ describe("Column Properties Modal", () => {
   });
 
   it('should create migration flow "test column prop" if it does not exist', () => {
-    cy.contains("Manage Flows").click();
-
     const flowName = "test column prop";
 
-    // Intercept the flows API call
+    // Intercept the flows API call BEFORE triggering navigation
     cy.intercept("GET", "**/api/migration/flows*").as("getFlows");
+
+    cy.contains("Manage Flows").click();
+
+    // Wait for the API call to complete
     cy.wait("@getFlows");
 
     // Search for the flow
@@ -105,7 +107,35 @@ describe("Column Properties Modal", () => {
     // Click the button after adding the table
     cy.get(".sc-gjTGSA > button > .sc-kFuwaP").click();
 
+    // Click download from source and wait for download to complete
+    cy.get('[title="Download from source"]').click();
+    cy.contains("Download completed (download)", { timeout: 120000 }).should(
+      "be.visible",
+    );
+    cy.get(":nth-child(2) > .dMqmKY").click();
+    cy.get(
+      '[style="cursor: pointer; background-color: rgb(243, 242, 241); width: 103px; max-width: 103px; position: relative;"] > .sc-dmqHEX > .sc-gjTGSA',
+    ).click();
 
+    // Enter test label name
+    cy.get(":nth-child(2) > .field-input").clear().type("Test");
+
+    // Enter test description
+    cy.get(".field-textarea").clear().type("Test");
+
+    // Intercept the apply changes API call
+    cy.intercept("PUT", "**/api/migration/meta/table/attribute*").as(
+      "applyChanges",
+    );
+
+    // Click apply changes button
+    cy.get(".button-primary").click();
+
+    // Check that apply changes API succeeded with status 200
+    cy.wait("@applyChanges").then((interception) => {
+      expect(interception.response.statusCode).to.equal(200);
+      cy.log("Apply changes API succeeded");
+    });
   });
 
   //   // Helper to check table and add if missing
