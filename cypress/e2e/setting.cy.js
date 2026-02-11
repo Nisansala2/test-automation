@@ -1,7 +1,7 @@
 describe('Setting page tests', () => {
 const validUser = {
-    email: 'nisansala@example.com',
-    password: '123456'
+    email: 'rohana@example.com',
+    password: 'hefnu6-veDvez-domcen'
   }
  const sourcecardinatilies ={
      source_url :'https://valeofoodsuk-cfg.ifs.cloud',
