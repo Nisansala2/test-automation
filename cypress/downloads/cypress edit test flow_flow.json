@@ -1,0 +1,21 @@
+{
+  "flow": {
+    "id": 440,
+    "name": "cypress edit test flow",
+    "description": " edit This is a test automation flow description",
+    "diagram": {
+      "nodes": [],
+      "edges": [],
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "meta": {
+        "globalFilters": [],
+        "entityMappings": {}
+      }
+    },
+    "updatedAt": "2026-02-02T07:46:29.215Z"
+  }
+}
