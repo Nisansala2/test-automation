@@ -7,36 +7,43 @@ Cypress.Commands.add("login", (email, password) => {
   cy.contains("button", "Sign in").click();
 });
 
-Cypress.Commands.add("migration_flow", () => {
-  cy.contains("Manage Flows").click();
-  cy.get("button").contains("New").click();
-  cy.get("#new-flow-name").type("test migration flow");
-  cy.get("#new-flow-description").type("test migration flow description");
-  cy.get("button").contains("Create Flow").click();
-});
+const tableSearch1 = '^SupplierInfo$'
+const tableName = "SupplierInfo"
+const placeholder = 'Search: ^start, end$, ^exact$, includes'
 
-Cypress.Commands.add("Create_migration_flow", () => {
-  cy.contains("Manage Flows").click();
-  cy.get("button").contains("New").click();
-  cy.get("#new-flow-name").type("test migration flow");
-  cy.get("#new-flow-description").type("test migration flow description");
-  cy.get("button").contains("Create Flow").click();
-  cy.contains("Loading database...", { timeout: 60000 }).should("not.exist");
-  cy.get('[title="Reload tables from source"]').click();
-  cy.contains("Saving tables snapshot...", { timeout: 60000 }).should(
-    "not.exist",
-  );
+Cypress.Commands.add('migration_flow', () => {
+cy.contains('Manage Flows').click()
+cy.get('button').contains('New').click()
+cy.get('#new-flow-name').type('test migration flow')
+cy.get('#new-flow-description').type("test migration flow description")
+cy.get('button').contains('Create Flow').click()
 
-  const tableSearch1 = "^AbcClass$";
-  const tableSearch2 = "^SupplierInfo$";
-  const placeholder = "Search: ^start, end$, ^exact$, includes";
+  
+})
 
-  cy.get('input[placeholder="' + placeholder + '"]').type(tableSearch1);
+Cypress.Commands.add('Create_migration_flow', () => {
+cy.contains('Manage Flows').click()
+cy.get('button').contains('New').click()
+cy.get('#new-flow-name').type("test table functionality flow")
+cy.get('#new-flow-description').type("test table functionality flow description")
+cy.get('button').contains('Create Flow').click()
+cy.contains('Loading database...', { timeout: 60000 })
+               .should('not.exist')
+cy.get('[title="Reload tables from source"]').click()
+cy.contains('Saving tables snapshot...', { timeout: 60000 })
+  .should('not.exist')
 
-  cy.contains("AbcClass").click();
-  cy.wait(2000);
-  cy.get('[title="Synchronize database"]').click();
-  cy.contains("Synchronizing database...", { timeout: 20000 });
+
+cy.get('input[placeholder="' + placeholder + '"]')
+  .type(tableSearch1 )
+
+cy.contains(tableName).click()
+cy.wait(2000)
+cy.get('[title="Synchronize database"]').click()
+cy.contains('Synchronizing database...', { timeout: 20000 })
+  
+cy.contains('Synchronizing database...', { timeout: 60000 })
+  .should('not.exist')
 
   cy.contains("Synchronizing database...", { timeout: 60000 }).should(
     "not.exist",
@@ -60,8 +67,7 @@ Cypress.Commands.add("navigateToDataWizard", () => {
   cy.visit("https://cypress.tabletap.lk/pages/dataWizard");
 });
 
-Cypress.Commands.add(
-  "getOrCreateFlow",
+Cypress.Commands.add("getOrCreateFlow", 
   (flowName, description = "Created by Cypress automation") => {
     // Intercept the flows API call BEFORE triggering navigation
     cy.intercept("GET", "**/api/migration/flows*").as("getFlows");

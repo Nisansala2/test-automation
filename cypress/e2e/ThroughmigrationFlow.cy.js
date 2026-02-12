@@ -1,10 +1,12 @@
 describe('through the tenant tests', () => {
 
 const validUser = {
-    email: 'nisansala@example.com',
-    password: '123456'
+    email: 'rohana@example.com',
+    password: 'hefnu6-veDvez-domcen'
   }
-    
+
+const flowname = 'test migration flow'
+
 beforeEach(() => {
   cy.login(validUser.email, validUser.password)
     
@@ -19,11 +21,12 @@ it('Reload tables in migrate data ', () => {
 
   })
 
-it('should search table  ', () => {
+it(' search table  ', () => {
   const tableSearch1 = '^SupplierAddress$'
   const tableSearch2 = '^SupplierInfo$'
   const placeholder = 'Search: ^start, end$, ^exact$, includes'
-  cy.migration_flow()
+  cy.contains('Manage Flows').click()
+  cy.contains(flowname).click()
   cy.get('input[placeholder="' + placeholder + '"]')
     .type(tableSearch1 )
   cy.contains('Supplier').click()
@@ -32,9 +35,10 @@ it('should search table  ', () => {
   })
 
    
-it('should synchronize ,Download and migrate database ', () => {
+it('synchronize  database ', () => {
   
-  cy.migration_flow()
+  cy.contains('Manage Flows').click()
+  cy.contains(flowname).click()
   
   cy.get('[title="Synchronize database"]').click()
   cy.contains('Synchronizing database...', { timeout: 20000 })
@@ -42,34 +46,51 @@ it('should synchronize ,Download and migrate database ', () => {
   cy.contains('Synchronizing database...', { timeout: 60000 })
     .should('not.exist')
 
-  cy.contains('SupplierAddress')
+
+   cy.contains('SupplierAddress')
     .parents('.react-flow__node')
     .within(() => {
-    
-  cy.get('[title="Download data from source database"]' ,{timeout:6000 }).click()
-    .should('be.visible')
-    .and('not.be.disabled')
-    .click()
- 
-  cy.get('[title="Start migration Upload data to destination database"]').click()
-    .should('be.enabled')
 
-  cy.get('[title="View download and migration logs for this table"]').click()
+       
+const downloadBtn = '[title="Download data from source database"]'
+const migrateBtn = '[title="Start migration Upload data to destination database"]'
+
+// Click Download
+cy.get(downloadBtn).click()
+
+// Wait until download button UI changes (success)
+cy.get(downloadBtn, { timeout: 60000 })
+   .should('be.enabled')  // or changed state
+
+// Click Migrate AFTER download finishes
+cy.get(migrateBtn).click()
+cy.get(migrateBtn, { timeout: 60000 })
+   .should('be.enabled')  // or changed state
+
+ cy.get('[title="View download and migration logs for this table"]').click()
   cy.wait(5000)
-  cy.contains('close').click()
+
     })
+
+
+
+ cy.get('[title="Save current configuration"]').click()
+  cy.contains('Saving Flow...', { timeout: 60000 })
+    .should('not.exist')
+
+
+  
   
  
-  cy.get('[title="Save current configuration"] > .sc-kFuwaP').click()
-
-})
 
 
+ }) 
+
+   
 it(' sholud show logs in table ', () => {
   
   cy.migration_flow()       
-  cy.get('[title="View download and migration logs for this table"]').click()
-  cy.wait(5000)
+ 
   cy.get(':nth-child(2) > .dMqmKY').click() 
   
 })
@@ -77,10 +98,13 @@ it(' sholud show logs in table ', () => {
 it(' sholud save current configration ', () => {
   cy.migration_flow()
     
-  });
+  })
+
+})
    
 
- })
+ 
+
 
 
  

@@ -2,8 +2,9 @@
 describe('Login page tests', () => {
 
   const validUser = {
-    email: 'nisansala@example.com',
-    password: '123456'
+    email: 'rohana@example.com',
+    password: 'hefnu6-veDvez-domcen'
+
   }
 
   const flowName = 'cypress test flow'
