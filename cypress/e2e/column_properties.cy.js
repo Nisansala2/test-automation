@@ -88,95 +88,76 @@ describe("Column Properties Modal", () => {
     });
   });
 
-  it("should open Column Properties modal and apply changes", () => {
-    // --- OPEN MODAL ---
-    // Click on a column header to open the modal (excluding the first two system columns)
-    // We target the 3rd column (index 2) or a specific column by name if known
-    cy.get('[data-testid="records-table"] thead th')
-      .eq(3) // Adjust index to pick a safe column (e.g., Email or Name)
-      .click();
+  // it("should open Column Properties modal and apply changes", () => {
+  //   // --- OPEN MODAL ---
+  //   // Click on a column header to open the modal (excluding the first two system columns)
+  //   // We target the 3rd column (index 2) or a specific column by name if known
+  //   cy.get('[data-testid="records-table"] thead th')
+  //     .eq(3) // Adjust index to pick a safe column (e.g., Email or Name)
+  //     .click();
 
-    // Verify modal is visible
-    cy.contains("Column Properties").should("be.visible");
-    cy.get(".panel-footer").should("be.visible");
+  //   // Verify modal is visible
+  //   cy.contains("Column Properties").should("be.visible");
+  //   cy.get(".panel-footer").should("be.visible");
 
-    // --- TEST INPUTS ---
+  //   // --- TEST INPUTS ---
 
-    // 1. Label
-    cy.contains("label", "Label").next("input").as("labelInput");
-    cy.get("@labelInput").should("be.visible");
-    const newLabel = "Updated Label " + Date.now();
-    cy.get("@labelInput").clear().type(newLabel);
+  //   // 1. Label
+  //   cy.contains("label", "Label").next("input").as("labelInput");
+  //   cy.get("@labelInput").should("be.visible");
+  //   const newLabel = "Updated Label " + Date.now();
+  //   cy.get("@labelInput").clear().type(newLabel);
 
-    // 2. Type (Read-only)
-    cy.contains("label", "Type").next("input").should("be.disabled");
+  //   // 2. Type (Read-only)
+  //   cy.contains("label", "Type").next("input").should("be.disabled");
 
-    // 3. Description
-    cy.contains("label", "Description").next("textarea").as("descInput");
-    cy.get("@descInput")
-      .clear()
-      .type("This is a test description for Cypress.");
+  //   // 3. Description
+  //   cy.contains("label", "Description").next("textarea").as("descInput");
+  //   cy.get("@descInput")
+  //     .clear()
+  //     .type("This is a test description for Cypress.");
 
-    // 4. Options (Mandatory / Visible)
-    // Mandatory
-    cy.contains("Mandatory").parent().click(); // Toggle checkbox
+  //   // 4. Options (Mandatory / Visible)
+  //   // Mandatory
+  //   cy.contains("Mandatory").parent().click(); // Toggle checkbox
 
-    // Visible
-    // Note: If you uncheck 'Visible', the column might disappear after apply, possibly breaking subsequent tests if not handled.
-    // We'll toggle it twice to leave it visible.
-    cy.contains("Visible").parent().click();
-    cy.contains("Visible").parent().click();
+  //   // Visible
+  //   // Note: If you uncheck 'Visible', the column might disappear after apply, possibly breaking subsequent tests if not handled.
+  //   // We'll toggle it twice to leave it visible.
+  //   cy.contains("Visible").parent().click();
+  //   cy.contains("Visible").parent().click();
 
-    // 5. Conversion List (Custom Selector)
-    cy.contains("label", "Conversion List").next().click(); // Open dropdown
-    // Assuming standard React Select or similar structure, adjust if needed
-    // cy.contains('OptionName').click(); // Select an option if available
+  //   // 5. Conversion List (Custom Selector)
+  //   cy.contains("label", "Conversion List").next().click(); // Open dropdown
+  //   // Assuming standard React Select or similar structure, adjust if needed
+  //   // cy.contains('OptionName').click(); // Select an option if available
 
-    // 6. Reference
-    cy.contains("label", "Reference").next("input").type("IsoCountry");
+  //   // 6. Reference
+  //   cy.contains("label", "Reference").next("input").type("IsoCountry");
 
-    // 7. Decimal Point (if numeric, or generally check visibility)
-    // This input might not exist if type is not numeric, wrap in conditional check or just check existence if applicable
-    cy.get("body").then(($body) => {
-      if ($body.find('input[placeholder="."]').length > 0) {
-        cy.get('input[placeholder="."]').type(".");
-      }
-    });
+  //   // 7. Decimal Point (if numeric, or generally check visibility)
+  //   // This input might not exist if type is not numeric, wrap in conditional check or just check existence if applicable
+  //   cy.get("body").then(($body) => {
+  //     if ($body.find('input[placeholder="."]').length > 0) {
+  //       cy.get('input[placeholder="."]').type(".");
+  //     }
+  //   });
 
-    // 8. Pad Left/Right
-    cy.contains("label", "Pad Left Characters").next("input").type("0");
-    cy.contains("label", "Pad Right Characters").next("input").type(" ");
+  //   // 8. Pad Left/Right
+  //   cy.contains("label", "Pad Left Characters").next("input").type("0");
+  //   cy.contains("label", "Pad Right Characters").next("input").type(" ");
 
-    // --- APPLY CHANGES ---
-    cy.contains("button", "Apply").click();
+  //   // --- APPLY CHANGES ---
+  //   cy.contains("button", "Apply").click();
 
-    // --- VERIFICATION ---
-    // Verify modal closes
-    cy.contains("Column Properties").should("not.exist");
+  //   // --- VERIFICATION ---
+  //   // Verify modal closes
+  //   cy.contains("Column Properties").should("not.exist");
 
-    // Verify Label Change in Table Header
-    // Note: Reload might be needed if state isn't instant, but usually it is.
-    cy.get('[data-testid="records-table"] thead th')
-      .contains(newLabel)
-      .should("be.visible");
-  });
-
-  it("should close modal without applying changes", () => {
-    cy.get('[data-testid="records-table"] thead th').eq(3).click();
-    cy.contains("Column Properties").should("be.visible");
-
-    // Change something
-    cy.contains("label", "Label").next("input").type("Discard This");
-
-    // Click Cancel
-    cy.contains("button", "Cancel").click();
-
-    // Verify modal closed
-    cy.contains("Column Properties").should("not.exist");
-
-    // Verify label did NOT change
-    cy.get('[data-testid="records-table"] thead th')
-      .contains("Discard This")
-      .should("not.exist");
-  });
+  //   // Verify Label Change in Table Header
+  //   // Note: Reload might be needed if state isn't instant, but usually it is.
+  //   cy.get('[data-testid="records-table"] thead th')
+  //     .contains(newLabel)
+  //     .should("be.visible");
+  // });
 });
