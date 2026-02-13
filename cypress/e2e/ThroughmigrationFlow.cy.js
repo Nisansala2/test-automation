@@ -77,13 +77,6 @@ cy.get(migrateBtn, { timeout: 60000 })
  cy.get('[title="Save current configuration"]').click()
   cy.contains('Saving Flow...', { timeout: 60000 })
     .should('not.exist')
-
-
-  
-  
- 
-
-
  }) 
 
    
