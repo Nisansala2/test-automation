@@ -62,7 +62,11 @@ describe("Column Properties Modal", () => {
     cy.contains("Download completed (download)", { timeout: 120000 }).should(
       "be.visible",
     );
+
+    //close download modal
     cy.get(":nth-child(2) > .dMqmKY").click();
+
+    // Click on the 1st column and opens the porperty modal
     cy.get(
       '[style="cursor: pointer; background-color: rgb(243, 242, 241); width: 103px; max-width: 103px; position: relative;"] > .sc-dmqHEX > .sc-gjTGSA',
     ).click();
@@ -72,6 +76,18 @@ describe("Column Properties Modal", () => {
 
     // Enter test description
     cy.get(".field-textarea").clear().type("Test");
+
+    // Decimal point 
+    cy.get(":nth-child(9) > .field-input").clear().type("0");
+
+    // Default value
+    cy.get(":nth-child(10) > .field-input").clear().type("000");
+
+    // Padding left
+    cy.get(":nth-child(11) > .field-input").clear().type("xx");
+
+    // Padding right
+    cy.get(":nth-child(12) > .field-input").clear().type("xx");
 
     // Intercept the apply changes API call
     cy.intercept("PUT", "**/api/migration/meta/table/attribute*").as(
@@ -86,6 +102,32 @@ describe("Column Properties Modal", () => {
       expect(interception.response.statusCode).to.equal(200);
       cy.log("Apply changes API succeeded");
     });
+
+    // Refresh the page to verify data persistence
+    cy.reload();
+
+    // Wait for 2 seconds
+    cy.wait(2000);
+
+    // Reopen the column properties modal
+    // Click on the first column
+    // Click on the 1st column and opens the porperty modal
+    cy.get(
+      '[style="cursor: pointer; background-color: rgb(243, 242, 241); width: 103px; max-width: 103px; position: relative;"] > .sc-dmqHEX > .sc-gjTGSA',
+    ).click();
+
+
+    // Verify all the saved values are persisted
+    cy.get(":nth-child(2) > .field-input").should(
+      "have.value",
+      "Supplier Id Test",
+    );
+    cy.get(".field-textarea").should("have.value", "Test");
+    cy.get(":nth-child(10) > .field-input").should("have.value", "000");
+    cy.get(":nth-child(11) > .field-input").should("have.value", "xx");
+    cy.get(":nth-child(12) > .field-input").should("have.value", "xx");
+
+    cy.log("✅ All values verified after page refresh!");
   });
 
   // it("should open Column Properties modal and apply changes", () => {
