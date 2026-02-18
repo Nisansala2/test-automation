@@ -1,15 +1,18 @@
 describe('Conversion List functionality', () => {
 
   const validUser = {
-    email: 'nisansala@example.com',
-    password: '123456'
+    email: 'rohana@example.com',
+    password: 'hefnu6-veDvez-domcen'
   }
 
   beforeEach(() => {
-    cy.login(validUser.email, validUser.password)
-    //toggle view menu
-    cy.get('.bpJfoD').click()    
-    cy.contains('Conversion List').click()
+  cy.login(validUser.email, validUser.password)
+            
+  //toggle view menu
+  cy.get('.bpJfoD').click() 
+
+  cy.contains('Conversion List').click()
+
   })
   
   it('Create conversion list', () => {
@@ -48,6 +51,12 @@ describe('Conversion List functionality', () => {
     const filePath = 'company_conversions.csv';
     cy.get('input[type="file"]').attachFile(filePath);
     cy.get('button').contains('Import').click()
+  })
+
+  it('Delete conversion list', () => {
+    cy.contains('cypress_conversion_list1').click()
+    cy.get('[title="Delete conversion list"]').click()
+    cy.get('button').contains('Confirm deletion').click()
   })
   
 })

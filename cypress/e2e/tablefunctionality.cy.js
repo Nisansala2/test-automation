@@ -1,9 +1,8 @@
 describe('table functionality ', () => {
 
-
 const validUser = {
-    email: 'rohana@example.com',
-    password: 'hefnu6-veDvez-domcen'
+  email: 'rohana@example.com',
+  password: 'hefnu6-veDvez-domcen'
   }
 const flowname = 'test table functionality flow'
 const tableName = "SupplierInfo"
@@ -131,19 +130,15 @@ it ('should add field in table ', () => {
   cy.get('input[placeholder="e.g. customer_id"]')
     .clear()
     .type('customer_id');
-
-  cy.get('select[name="dataType"]').select('String'); 
+  //select data type
+  cy.get('.eUTfhg > :nth-child(2) > select').select('String'); 
  
 
   // Enter Default Value (optional)
   cy.get('input[placeholder="Optional default value for existing rows"]')
     .type('N/A');
 
-  // Check Required Field (if needed)
-  cy.contains('Required Field')
-    .parent()
-    .find('input[type="checkbox"]')
-    .check();
+
 
   // Click Create Field button
   cy.contains('Create Field').click();
@@ -202,7 +197,7 @@ it ('should delete all record in table ', () => {
   cy.contains('Database').click()
   cy.contains(tableName).click()
  
-  cy.get('[title="Clear 1569 filtered rows"]').click()
+  cy.get('[title="Clear 1567 filtered rows"]').click()
   cy.contains('button', 'Confirm Deletion').click()
 
     })

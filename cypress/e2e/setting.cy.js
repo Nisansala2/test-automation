@@ -65,7 +65,10 @@ cy.contains('Save Configuration').click();
 
 it('Update destination IFS connection settings ', () => {
 
-cy.get('.ljlDcY > .sc-gLDzan > .sc-blLsxD').click();
+  cy.get('#scope-dest')
+  .parent()
+  .click()
+
 
 cy.contains('Destination IFS Connection Settings')
   .parent()

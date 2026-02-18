@@ -1,11 +1,13 @@
 describe('Data wizard functionality', () => {
 
   const validUser = {
-    email: 'nisansala@example.com',
-    password: '123456'
+   email: 'rohana@example.com',
+   password: 'hefnu6-veDvez-domcen'
   }
   const File = {
-    filname :'supplierInfo1.csv'
+    csvfilname :'supplierInfo1.csv',
+    excelfilname :'supplierInfo1.xlsx',
+    germanlanguagefilename :'German_Sample_Data.xlsx'
 
   }
 
@@ -16,13 +18,28 @@ beforeEach(() => {
     
 })
 
-it ('should load data wizard page', () => {
-  cy.get('input[type="file"]').attachFile(File.filname);
+it ('should load data wizard page and import csv file', () => {
+  //load data wizard page
+  cy.get('input[type="file"]').attachFile(File.csvfilname);
   cy.wait(2000) 
   cy.get('button').contains('Preview Data').click()
   cy.get('button').contains('Create Table').click() 
   
   })
-
   
+it ('should load data wizard page and import exel file', () => {
+  //load data wizard page
+  cy.get('input[type="file"]').attachFile(File.excelfilname);
+  cy.wait(2000) 
+  cy.get('button').contains('Preview Data').click()
+  cy.get('button').contains('Create Table').click()
+})
+
+it('Should load data wizard page and import Germon lauange file', () => {
+  cy.get('input[type="file"]').attachFile(File.germanlanguagefilename);
+  cy.wait(2000) 
+  cy.get('button').contains('Preview Data').click()
+  cy.get('button').contains('Create Table').click()
+  
+})
 })
