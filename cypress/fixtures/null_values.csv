@@ -1,5 +1,5 @@
 SupplierID,SupplierName,Email,Country,Amount
-1,Supplier_1,supplier1@example.com,Sri Lanka,3006
+1,Supplier_1,,Sri Lanka,3006
 2,Supplier_2,supplier2@example.com,Germany,1270
 3,Supplier_3,supplier3@example.com,Sri Lanka,2553
 4,Supplier_4,supplier4@example.com,Germany,2674
