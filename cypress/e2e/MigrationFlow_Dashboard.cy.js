@@ -1,12 +1,11 @@
 
-describe('Login page tests', () => {
+describe('Migration Flow Dashboard - Happy path ', () => {
 
   const validUser = {
     email: 'rohana@example.com',
     password: 'hefnu6-veDvez-domcen'
 
   }
-
   const flowName = 'cypress test flow'
   const flowDesc = 'This is a test automation flow description'
  
@@ -99,6 +98,51 @@ it ('Import flow ', () => {
 
 }) 
 }) 
+
+describe('Migration Flow - Edge Cases', () => {
+
+  const validUser = {
+    email: 'rohana@example.com',
+    password: 'hefnu6-veDvez-domcen'
+  }
+
+  const flowname = 'test migration flow'
+
+  beforeEach(() => {
+    cy.login(validUser.email, validUser.password)
+    cy.getOrCreateFlow(flowname)
+  })
+
+  // ─── FLOW CREATION EDGE CASES ─────────────────────────────────────────────
+
+  it('Should not create a flow with an empty name', () => {
+    cy.contains('New Flow').click()
+    cy.get('input[placeholder*="flow name"]').clear()
+    cy.contains('button', 'Create').click()
+    cy.contains(/name is required|cannot be empty/i).should('be.visible')
+  })
+
+  it('Should not create a duplicate flow name', () => {
+    cy.contains('New Flow').click()
+    cy.get('input[placeholder*="flow name"]').clear().type(flowname)
+    cy.contains('button', 'Create').click()
+    cy.contains(/already exists|duplicate/i).should('be.visible')
+  })
+
+  it('Should not create a flow with only whitespace as name', () => {
+    cy.contains('New Flow').click()
+    cy.get('input[placeholder*="flow name"]').clear().type('     ')
+    cy.contains('button', 'Create').click()
+    cy.contains(/invalid|cannot be empty/i).should('be.visible')
+  })
+
+  it('Should not create a flow with special characters in name', () => {
+    cy.contains('New Flow').click()
+    cy.get('input[placeholder*="flow name"]').clear().type('flow!@#$%')
+    cy.contains('button', 'Create').click()
+    cy.contains(/invalid|special characters not allowed/i).should('be.visible')
+  })
+})
 
 
    

@@ -4,7 +4,7 @@ describe('Conversion List functionality- Happy Path', () => {
     email: 'rohana@example.com',
     password: 'hefnu6-veDvez-domcen'
   }
-
+  
   beforeEach(() => {
   cy.login(validUser.email, validUser.password)
             

@@ -1,21 +1,21 @@
-describe('through the tenant tests', () => {
+describe('Group functonality', () => {
 
 const validUser = {
+
     email: 'rohana@example.com',
     password: 'hefnu6-veDvez-domcen'
+
   }
 
  const flowname = 'test migration flow'
 
-beforeEach(() => {
+  beforeEach(() => {
   cy.login(validUser.email, validUser.password)
-    
-   })
+  })
 
-it(' create , reload flow and add tables to the flow ', () => { 
- 
+it('Select multiple tables using CTRL + click', () => {
 
-  //create flow if not exists and navigate to flow
+//create flow if not exists and navigate to flow
   cy.getOrCreateFlow(flowname);
 
   // Only reload tables if no tables are persisted yet
@@ -66,65 +66,25 @@ it(' create , reload flow and add tables to the flow ', () => {
     .should('not.exist')
 
   
+//Open Group section
+cy.contains('Groups').click()
 
-  cy.contains('SupplierAddress')
-    .parents('.react-flow__node')
-    .within(() => {
+//open driagam
+cy.contains('Drawing').click()
 
-  const downloadBtn = '[title="Download data from source database"]'
 
- //click download button and wait for download to complete
- cy.get(downloadBtn).click().should('be.enabled')  // or changed state
-  //click view log button
- cy.get('[title="View download and migration logs for this table"]').click()
- })
-cy.contains('Download done:', { timeout: 80000 })
-  .then(() => {
-    cy.log('Download completed successfully');
-  });
 
-// close download modal
- cy.get('svg')
-  .closest('button')
-  .click({multiple: true})
+// Hold CTRL key
+cy.get('body').type('{ctrl}', { release: false });
 
-  //click migration button and wait for migration to complete
-  
-  const migrateBtn = '[title="Start migration Upload data to destination database"]'
-  cy.get(migrateBtn, { timeout: 60000 }).click().should('be.enabled')  // or changed state
+// Click first table
+cy.contains('SupplierAddress').click({ force: true });
 
-  //click view log button
-  cy.get('[title="View download and migration logs for this table"]').click()
-   
-  cy.contains("Upload completed (Upload)", { timeout: 120000 }).should(
-      "be.visible",
-    );
-// close migration log modal
-  cy.get('svg')
-    .closest('button')
-    .click()
+// Click second table
+cy.contains('SupplierInfo').click({ force: true });
 
-//save flow
- cy.get('[title="Save current configuration"]').click()
-  cy.contains('Saving Flow...', { timeout: 60000 })
-    .should('not.exist')
-
-})
- 
-
+// Release CTRL
+cy.get('body').type('{ctrl}');
 })
 
-
-
-
-   
-
- 
-
-
-
- 
-   
-
-
-
+})

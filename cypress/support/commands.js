@@ -114,6 +114,12 @@ Cypress.Commands.add("getOrCreateFlow",
         cy.wait("@createFlow").then((interception) => {
           cy.log("Flow created successfully");
           expect(interception.response.statusCode).to.be.oneOf([200, 201]);
+
+           //Load flow 
+        cy.contains('Loading tables...', { timeout: 60000 })
+               .should('not.exist')
+
+
         });
       }
     });
