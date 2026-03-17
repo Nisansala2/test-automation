@@ -1,7 +1,7 @@
 import "cypress-file-upload";
 
 Cypress.Commands.add("login", (email, password) => {
-  cy.visit("https://test.tabletap.lk");
+  cy.visit("https://cypresstenant.old.tabletap.lk");
   cy.get('input[type="email"]').type(email);
   cy.get('input[type="password"]').type(password);
   cy.contains("button", "Sign in").click();
