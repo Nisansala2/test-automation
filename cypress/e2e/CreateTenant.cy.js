@@ -13,7 +13,7 @@ describe('Login page tests', () => {
  
   beforeEach(() => {
 
-  cy.visit('https://tabletap.lk/login')
+  cy.visit('https://old.tabletap.lk/')
   cy.get('input[type="email"]').type(validUser.email)
   cy.get('input[type="password"]').type(validUser.password)
   cy.contains('button', 'Sign in').click()

@@ -5,30 +5,39 @@ describe('through the tenant tests', () => {
    password: 'hefnu6-veDvez-domcen'
     }
    
-beforeEach(() => {
+ beforeEach(() => {
     cy.login(validUser.email, validUser.password)
     cy.getOrCreateFlow('test flow for global filter')
+    cy.contains('Loading tables...', { timeout: 60000 })
+    .should('not.exist')
   
-})
+  })
 
-it (' add equal and verify global filter  ', () => {
+  it (' add equal and verify global filter  ', () => {
 
   // Search for SupplierInfo
   const searchPlaceholder = "Search: ^start, end$, ^exact$, includes";
+
   cy.get(`input[placeholder="${searchPlaceholder}"]`)
     .clear()
     .type("SupplierInfo");
 
-  // Add 'SupplierInfo' table only if it exists
-  cy.get("body").then(($body) => {
-    if ($body.find('[title="SupplierInfo"]').length > 0) {
-    cy.log("SupplierInfo found, clicking to add...");
-    cy.get('[title="SupplierInfo"]').click();
+  // target the list container instead of body
+  cy.wait(500);
+
+  cy.get('.dTrtJo')   // your real container
+    .should('exist')  // ensure container exists
+    .then(($container) =>{
+const supplierInfo = $container.find('[title="SupplierInfo"]');
+
+  if (supplierInfo.length > 0) {
+    cy.wrap(supplierInfo).click();
+      cy.log('SupplierInfo found and clicked');
     } else {
-     cy.log("SupplierInfo not found in the list.");
-      }
-    });
-  cy.wait(2000)
+      cy.log('SupplierInfo not found');
+    }
+  })
+  cy.wait(6000)
 
   // Click synchronize database and wait for popup to close
   cy.get('[title="Synchronize database"]').click()
@@ -36,6 +45,27 @@ it (' add equal and verify global filter  ', () => {
   
   cy.contains('Synchronizing database...', { timeout: 60000 })
     .should('not.exist')
+
+  //download table details 
+   cy.contains('SupplierInfo')
+    .parents('.react-flow__node')
+    .within(() => {
+   const downloadBtn = '[title="Download data from source database"]'
+
+  //click download button and wait for download to complete
+  cy.get(downloadBtn).click().should('be.enabled')  // or changed state
+  //click view log button
+  cy.get('[title="View download and migration logs for this table"]').click()
+   })
+  cy.contains('Download done:', { timeout: 80000 })
+  .  then(() => {
+    cy.log('Download completed successfully');
+  });
+
+// close download modal
+ cy.get('svg')
+  .closest('button')
+  .click({multiple: true})
 
     
   // Open global filter section
@@ -65,8 +95,9 @@ it (' add equal and verify global filter  ', () => {
 
     })
   
-  
+ 
 })
+
 
 it (' add notequal in global filter  ', () => {
 
@@ -244,8 +275,8 @@ it (' add less than in global filter  ', () => {
 
 })
 
-
 })
+
 describe('Global Filter - Edge Cases', () => {
 
   const validUser = {

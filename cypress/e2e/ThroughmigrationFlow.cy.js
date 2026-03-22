@@ -5,7 +5,8 @@ const validUser = {
     password: 'hefnu6-veDvez-domcen'
   }
 
- const flowname = 'test migration flow'
+ const flowname1 = 'test migration flow01'
+ const flowname2 = 'test migration flow02'
 
 beforeEach(() => {
   cy.login(validUser.email, validUser.password)
@@ -14,9 +15,8 @@ beforeEach(() => {
 
 it(' create , reload flow and add tables to the flow ', () => { 
  
-
   //create flow if not exists and navigate to flow
-  cy.getOrCreateFlow(flowname);
+  cy.getOrCreateFlow(flowname1);
 
   // Only reload tables if no tables are persisted yet
   cy.get("body").then(($body) => {
@@ -36,27 +36,96 @@ it(' create , reload flow and add tables to the flow ', () => {
       } else {
         cy.log("Tables already persisted, skipping reload.");
       }
+    })
 
+  // Search for Supplier table and add to flow
+  const searchPlaceholder = "Search: ^start, end$, ^exact$, includes";
+  const tableName1 = "Supplier";
+  const tableName2 = "SupplierInfo";
+  const tableName3 = "SupplierAddress";
 
-   // Search for SupplierInfo
-    const searchPlaceholder = "Search: ^start, end$, ^exact$, includes";
-    cy.get(`input[placeholder="${searchPlaceholder}"]`)
-      .clear()
-      .type("SupplierInfo");
+  cy.get(`input[placeholder="${searchPlaceholder}"]`)
+    .clear()
+    .type(tableName1);
 
-    // Add 'SupplierInfo' table only if it exists
-    
-    });
-    // Add 'SupplierInfo' table only if it exists
-  cy.get("body").then(($body) => {
-    if ($body.find('[title="SupplierInfo"]').length > 0) {
-    cy.log("SupplierInfo found, clicking to add...");
-    cy.get('[title="SupplierInfo"]').click();
+  // target the list container instead of body
+  cy.wait(500);
+
+  cy.get('.dTrtJo')   // your real container
+    .should('exist')  // ensure container exists
+    .then(($container) =>{
+const supplierInfo = $container.find('[title="Supplier"]');
+
+  if (supplierInfo.length > 0) {
+    cy.wrap(supplierInfo).click();
+      cy.log('Supplier found and clicked');
     } else {
-     cy.log("SupplierInfo not found in the list.");
-      }
-    });
-    
+      cy.log('Supplier not found');
+    }
+    })
+  cy.wait(6000)
+
+   // Search for SupplierInfo table and add to flow
+  cy.get(`input[placeholder="${searchPlaceholder}"]`)
+    .clear()
+    .type(tableName2);
+
+  // target the list container instead of body
+  cy.wait(500);
+
+  cy.get('.dTrtJo')   // your real container
+    .should('exist')  // ensure container exists
+    .then(($container) =>{
+const supplierInfo = $container.find('[title="SupplierInfo"]');
+
+  if (supplierInfo.length > 0) {
+    cy.wrap(supplierInfo).click();
+      cy.log('SupplierInfo found and clicked');
+    } else {
+      cy.log('SupplierInfo not found');
+    }
+    })
+  cy.wait(6000)
+
+   //Search for SupplierAddress table and add to flow
+     cy.get(`input[placeholder="${searchPlaceholder}"]`)
+    .clear()
+    .type(tableName3);
+
+  // target the list container instead of body
+  cy.wait(500);
+
+  cy.get('.dTrtJo')   // your real container
+    .should('exist')  // ensure container exists
+    .then(($container) =>{
+
+const supplierInfo = $container.find('[title="SupplierAddress"]');
+
+  if (supplierInfo.length > 0) {
+    cy.wrap(supplierInfo).click();
+      cy.log('SupplierAddress found and clicked');
+    } else {
+      cy.log('SupplierAddress not found');
+    }
+    })
+
+
+  cy.wait(6000)// Click synchronize database and wait for popup to close
+  cy.get('[title="Synchronize database"]').click()
+  cy.contains('Synchronizing database...', { timeout: 20000 })
+  
+  cy.contains('Synchronizing database...', { timeout: 60000 })
+    .should('not.exist')
+
+
+
+  })
+
+  //connect flows 
+
+it("Run connected flow and verify download and migration", () => {
+
+  cy.getOrCreateFlow(flowname2);
     
   // Click synchronize database and wait for popup to close
   cy.get('[title="Synchronize database"]').click()
@@ -65,9 +134,8 @@ it(' create , reload flow and add tables to the flow ', () => {
   cy.contains('Synchronizing database...', { timeout: 60000 })
     .should('not.exist')
 
-  
-
-  cy.contains('SupplierAddress')
+  // Download data for Supplier table and verify download completion
+  cy.contains('Supplier')
     .parents('.react-flow__node')
     .within(() => {
 
@@ -84,9 +152,51 @@ cy.contains('Download done:', { timeout: 80000 })
   });
 
 // close download modal
- cy.get('svg')
-  .closest('button')
-  .click({multiple: true})
+ cy.get('[title="Close"]').click()
+
+ // Download data for SupplierInfo table and verify download completion
+
+ cy.contains('SupplierInfo')
+    .parents('.react-flow__node')
+    .within(() => {
+
+  const downloadBtn = '[title="Download data from source database"]'
+
+ //click download button and wait for download to complete
+ cy.get(downloadBtn).click().should('be.enabled')  // or changed state
+  //click view log button
+ cy.get('[title="View download and migration logs for this table"]').click()
+ })
+cy.contains('Download done:', { timeout: 80000 })
+  .then(() => {
+    cy.log('Download completed successfully');
+  });
+
+// close download modal
+ cy.get('[title="Close"]').click()
+
+// Download data for SupplierAddress table and verify download completion
+
+ cy.contains('SupplierAddress')
+    .parents('.react-flow__node')
+    .within(() => {
+
+  const downloadBtn = '[title="Download data from source database"]'
+
+ //click download button and wait for download to complete
+ cy.get(downloadBtn).click().should('be.enabled')  // or changed state
+  //click view log button
+ cy.get('[title="View download and migration logs for this table"]').click()
+ })
+cy.contains('Download done:', { timeout: 80000 })
+  .then(() => {
+    cy.log('Download completed successfully');
+  });
+
+// close download modal
+ cy.get('[title="Close"]').click()
+
+
 
   //click migration button and wait for migration to complete
   
@@ -100,9 +210,7 @@ cy.contains('Download done:', { timeout: 80000 })
       "be.visible",
     );
 // close migration log modal
-  cy.get('svg')
-    .closest('button')
-    .click()
+  cy.get('[title="Close"]').click()
 
 //save flow
  cy.get('[title="Save current configuration"]').click()
@@ -113,6 +221,7 @@ cy.contains('Download done:', { timeout: 80000 })
  
 
 })
+
 
 
 
