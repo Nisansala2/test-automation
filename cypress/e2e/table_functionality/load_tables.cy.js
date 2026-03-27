@@ -13,7 +13,7 @@ beforeEach(() => {
 
 })
 
-it('should load table canva, navigate table details, download data, filterd data .add new record, add new column ', () => {
+it('should load table canva, navigate table details,. ', () => {
 
     //create flow if not exists and navigate to flow
   cy.getOrCreateFlow(flowname);

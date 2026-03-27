@@ -8,14 +8,32 @@ describe('Conversion List functionality- Happy Path', () => {
   const listName = 'cypress_conversion_list1'
 
 const openOrCreateConversionList = (name) => {
-  cy.contains(name).then(
-    () => cy.contains(name).click(),  // exists, click it
-    () => {  // doesn't exist, create it
-      cy.contains('New Conversion List').click()
-      cy.get('input[placeholder="e.g. CurrencyConversions"]').clear().type(name)
-      cy.contains('button', 'Create').click()
+    const findAndOpen = (attemptsLeft = 4) => {
+      cy.get('body').then(($body) => {
+        const existingItem = $body
+          .find('*')
+          .toArray()
+          .find((el) => el.textContent && el.textContent.trim() === name)
+
+        if (existingItem) {
+          cy.wrap(existingItem).click()
+          return
+        }
+
+        if (attemptsLeft > 0) {
+          cy.wait(500)
+          findAndOpen(attemptsLeft - 1)
+          return
+        }
+
+        cy.contains('New Conversion List').click()
+        cy.get('input[placeholder="e.g. CurrencyConversions"]').clear().type(name)
+        cy.contains('button', 'Create').click()
+        cy.wait(6000) // Wait for the list to be created and appear in the DOM
+      })
     }
-  )
+
+    findAndOpen()
 }
   
   beforeEach(() => {
@@ -32,6 +50,9 @@ const openOrCreateConversionList = (name) => {
   it('Create, Add values, export conversion list', () => {
 
   openOrCreateConversionList(listName)
+
+  cy.contains(listName).should('be.visible')
+  cy.wait(2000)
 
   cy.contains(listName).click()
   cy.contains('Add Value').click()
