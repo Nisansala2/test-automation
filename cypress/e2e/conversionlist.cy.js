@@ -6,6 +6,7 @@ describe('Conversion List functionality- Happy Path', () => {
   }
 
   const listName = 'cypress_conversion_list1'
+  const filePath = 'company_conversions.csv';
 
 const openOrCreateConversionList = (name) => {
     const findAndOpen = (attemptsLeft = 4) => {
