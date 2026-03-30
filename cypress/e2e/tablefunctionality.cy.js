@@ -13,47 +13,57 @@ beforeEach(() => {
 
 })
 
-it('should load table page', () => {
-  cy.contains('Manage Flows').click()
-  // Search flow
-  cy.get('input[placeholder="Search flows..."]')
-    .clear()
-    .type(flowname);
+it('should load table canva, navigate table details, download data, filterd data .add new record, add new column ', () => {
 
-  // Wait for search result to render (better use intercept if API exists)
-  cy.wait(1000);
-
-  cy.get('body').then(($body) => {
-
-    if ($body.text().includes(flowname)) {
-
-      cy.log('Flow exists');
-      cy.contains(flowname).click();
-
-    } else {
-
-      cy.log('Flow not found - creating new flow');
-      cy.Create_migration_flow();   // your custom command
-
-    }
-
-  });
-
-    // Search for SupplierInfo
-    const searchPlaceholder = "Search: ^start, end$, ^exact$, includes";
-    cy.get(`input[placeholder="${searchPlaceholder}"]`)
-      .clear()
-      .type("SupplierInfo");
-
-     // Add 'SupplierInfo' table only if it exists
+    //create flow if not exists and navigate to flow
+  cy.getOrCreateFlow(flowname);
+   // Only reload tables if no tables are persisted yet
   cy.get("body").then(($body) => {
-    if ($body.find('[title="SupplierInfo"]').length > 0) {
-    cy.log("SupplierInfo found, clicking to add...");
-    cy.get('[title="SupplierInfo"]').click();
-    } else {
-     cy.log("SupplierInfo not found in the list.");
+    const noTablesPersisted = $body
+        .text()
+        .includes(
+          "No tables persisted yet. Click the save icon above to load tables from IFS.",
+        );
+
+    if (noTablesPersisted) {
+        cy.log("No tables persisted, reloading tables from source...");
+        // Reload tables from source
+        cy.get('[title="Reload tables from source"]').click();
+        cy.contains("Saving tables snapshot...", { timeout: 60000 }).should(
+          "not.exist",
+        );
+      } else {
+        cy.log("Tables already persisted, skipping reload.");
       }
-    });
+    })
+
+  // Search for Supplier table and add to flow
+  const searchPlaceholder = "Search: ^start, end$, ^exact$, includes";
+  
+  const tableName = "SupplierInfo";
+  
+
+  cy.get(`input[placeholder="${searchPlaceholder}"]`)
+    .clear()
+    .type(tableName);
+
+  // target the list container instead of body
+  cy.wait(500);
+
+  cy.get('.dTrtJo')   // your real container
+    .should('exist')  // ensure container exists
+    .then(($container) =>{
+const supplierInfo = $container.find('[title="SupplierInfo"]');
+
+  if (supplierInfo.length > 0) {
+    cy.wrap(supplierInfo).click();
+      cy.log('SupplierInfo found and clicked');
+    } else {
+      cy.log('SupplierInfo not found');
+    }
+    })
+  cy.wait(6000)
+   
       
   // Click synchronize database and wait for popup to close
   cy.get('[title="Synchronize database"]').click()
@@ -68,6 +78,8 @@ it('should load table page', () => {
     .within(() => {
       cy.get('[title="Open table details"]').click();
     });
+
+    
 
 //cy.intercept('GET', '**/api/migration/entity-structure?tableName=SupplierInfo&structureType=source').as('download');
 cy.get('[title="Download from source"]').click()
@@ -84,7 +96,7 @@ cy.contains('button', 'Filters').click();
 
 //search for supplier id and apply filter
 cy.get('input[placeholder="Search columns..."]').type('Supplier ID ')
-cy.get('input[placeholder="Filter Supplier Id Test"]').type('10001');
+cy.get('input[placeholder="Filter Supplier ID"]').type('10001');
 cy.contains('button', 'Apply Filter').click()
       .should ('be.visible')
 

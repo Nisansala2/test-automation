@@ -6,7 +6,7 @@ describe('Data wizard functionality- Happy Path', () => {
   }
   const File = {
     csvfilname :'supplierInfo1.csv',
-    excelfilname :'supplierInfo1.xlsx',
+    excelfilname :'customerInfo_sample.xlsx',
     germanlanguagefilename :'German_Sample_Data.xlsx'
 
   }
@@ -54,7 +54,6 @@ describe('Data Wizard functionality - Edge Cases', () => {
     csv: 'supplierInfo1.csv',
     excel: 'supplierInfo1.xlsx',
     german: 'German_Sample_Data.xlsx',
-    // Edge case fixtures you'll need to add to cypress/fixtures
     emptyCSV: 'empty.csv',
     emptyExcel: 'empty.xlsx',
     headerOnlyCSV: 'header_only.csv',

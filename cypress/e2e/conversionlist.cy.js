@@ -4,28 +4,58 @@ describe('Conversion List functionality- Happy Path', () => {
     email: 'rohana@example.com',
     password: 'hefnu6-veDvez-domcen'
   }
+
+  const listName = 'cypress_conversion_list1'
+  const filePath = 'company_conversions.csv';
+
+const openOrCreateConversionList = (name) => {
+    const findAndOpen = (attemptsLeft = 4) => {
+      cy.get('body').then(($body) => {
+        const existingItem = $body
+          .find('*')
+          .toArray()
+          .find((el) => el.textContent && el.textContent.trim() === name)
+
+        if (existingItem) {
+          cy.wrap(existingItem).click()
+          return
+        }
+
+        if (attemptsLeft > 0) {
+          cy.wait(500)
+          findAndOpen(attemptsLeft - 1)
+          return
+        }
+
+        cy.contains('New Conversion List').click()
+        cy.get('input[placeholder="e.g. CurrencyConversions"]').clear().type(name)
+        cy.contains('button', 'Create').click()
+        cy.wait(6000) // Wait for the list to be created and appear in the DOM
+      })
+    }
+
+    findAndOpen()
+}
   
   beforeEach(() => {
   cy.login(validUser.email, validUser.password)
-            
+          
   //toggle view menu
   cy.get('.bpJfoD').click() 
 
   cy.contains('Conversion List').click()
-
-  })
   
-  it('Create conversion list', () => {
-  cy.contains('New Conversion List').click()
-  cy.get('input[placeholder="e.g. CurrencyConversions"]')
-    .clear()
-    .type('cypress_conversion_list1')
-  cy.contains('button', 'Create').click() 
+    
+  });
+  
+  it('Create, Add values, export conversion list', () => {
 
-  })
+  openOrCreateConversionList(listName)
 
-  it('Add value to conversion list', () => {
-  cy.contains('cypress_conversion_list1').click()
+  cy.contains(listName).should('be.visible')
+  cy.wait(2000)
+
+  cy.contains(listName).click()
   cy.contains('Add Value').click()
   cy.get('input[placeholder="Old value"]')
     .clear()
@@ -36,17 +66,14 @@ describe('Conversion List functionality- Happy Path', () => {
 
   cy.get('#app button[title="Save"]').click();
   
-  })
-
-  it('Export conversion list', () => {
-    cy.contains('cypress_conversion_list1').click()
+    cy.contains(listName).click()
     cy.contains('Export').click()
     cy.get('button').contains('Export').click()
   })
 
 
   it('Import conversion list', () => {
-    cy.contains('cypress_conversion_list1').click()
+    cy.contains(listName).click()
     cy.contains('Import').click()
     const filePath = 'company_conversions.csv';
     cy.get('input[type="file"]').attachFile(filePath);
@@ -54,7 +81,7 @@ describe('Conversion List functionality- Happy Path', () => {
   })
 
   it('Delete conversion list', () => {
-    cy.contains('cypress_conversion_list1').click()
+    cy.contains(listName).click()
     cy.get('[title="Delete conversion list"]').click()
     cy.get('button').contains('Confirm deletion').click()
   })
